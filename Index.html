@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <title>Iai Já sabe?</title>
+</head>
+<body>
+    <div id="Jogo" class="Jogo">
+        <div id="Status" class="Status">
+            <h1 id="DicaAtual" class="DicaAtual"></h1>
+            <input type="file" id="csv" onchange="LeCSV(this.files[0])"/>
+        </div>
+        <div id="Tabuleiro" class="Tabuleiro">
+        </div>
+        <div id="Carta" class="Carta">
+            <button id="btPCarta" class="btPCarta" onclick="pCarta()" >Proxima carta</button>
+            <input id="nmTime" clasS="nmTime" type="text" placeholder="Adicione os Time aqui" onkeypress="addTime(event)">
+            <h1 id="Palavra" class="Palavra"></h1>
+            <h2 id="Categoria" class="Categoria"></h2>
+            <ul id="Dicas" class="Dicas"></ul>
+        </div>
+    </div>
+</body>
+</html>
