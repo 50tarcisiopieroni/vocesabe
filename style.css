@@ -59,7 +59,7 @@ body{
 
 .Palavra{
     text-align: center;
-    filter: blur(10px);
+    filter: blur(60px);
     height: 70px;
 }
 .Categoria{

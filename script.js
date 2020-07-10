@@ -29,7 +29,7 @@ function LeCSV( file ){
             var aux = data.replace(/"/g,"");
             aux = aux.split(',')
             aux.shift();
-            
+
             aux2 = new Carta(aux);
 
             Cartas.set(Cartas.size,aux2);
@@ -58,7 +58,7 @@ function pCarta(){
     }
 
     var titulo = document.getElementById('Palavra');
-    titulo.style.setProperty('filter', 'blur(10px)');
+    titulo.style.setProperty('filter', 'blur(80px)');
 
     var chave = null;
     var i = 0;
