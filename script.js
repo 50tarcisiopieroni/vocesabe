@@ -194,3 +194,14 @@ function TrocaTime(){
     
 }
 
+function Fim(){
+    var titulo = document.getElementById('Palavra');
+    var categoria = document.getElementById('Categoria');
+    var dicas = document.getElementById('Dicas');
+    var bt = document.getElementById('btPCarta');
+    bt.remove();
+    categoria.remove();
+    dicas.remove();
+    titulo.innerHTML = "Acabou!";
+    titulo.style.setProperty('filter', 'blur(0)');
+}
