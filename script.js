@@ -3,6 +3,8 @@ var Cartas = new Map();
 var CartaAtual = null;
 var vistas = [];
 var Times = [];
+var TimeAtual = 0;
+var UltimoJogar = 0;
 
 function Carta( data ){
     this.descricao = data.shift().trim();
@@ -18,7 +20,7 @@ function LeCSV( file ){
     const CSV = document.getElementById('csv');
     
     leitorDeCSV.readAsText(file);
-    
+
     leitorDeCSV.onload = function(e){
         var db =  leitorDeCSV.result.split('\n');
         
@@ -41,44 +43,52 @@ function LeCSV( file ){
 }
 
 function pCarta(){
-    vistas = [];
-    var div = document.getElementById('Carta');
-
+    // Confere se chegou ao fim
     if(Cartas.size === 0){
-        var titulo = document.getElementById('Palavra');
-        var categoria = document.getElementById('Categoria');
-        var dicas = document.getElementById('Dicas');
-        var bt = document.getElementById('btPCarta');
-        bt.remove();
-        categoria.remove();
-        dicas.remove();
-        titulo.innerHTML = "Acabou!";
-        titulo.style.setProperty('filter', 'blur(0)');
+        Fim();
         return;
     }
 
-    var titulo = document.getElementById('Palavra');
-    titulo.style.setProperty('filter', 'blur(80px)');
+    var alvo = document.getElementById(Times[TimeAtual].nome);
+    alvo.style.setProperty('background-color', 'rgb(231,231,231)' ) ;
 
+    TimeAtual = UltimoJogar++;
+
+    if(UltimoJogar>=Times.length){
+        UltimoJogar = 0;
+    }
+
+    TrocaTime();
+
+    // Inicializando Contadores
+    vistas = [];
+    console.log(vistas);
+    var div = document.getElementById('Carta');
     var chave = null;
     var i = 0;
     var r = Math.floor(Math.random() * Cartas.size);
 
+    // Selecionando elementos
+    var titulo = document.getElementById('Palavra');
+    var categoria = document.getElementById('Categoria');
+    var dicas = document.getElementById('Dicas');
+
+    // Ocultando a Palavra
+    titulo.style.setProperty('filter', 'blur(80px)');
+
+    // Sorteando carta
     for (var key of Cartas.keys()) {
         if (i++ === r) {
             chave =  key;
         }
     }
 
+    // Selecionando carta
     var carta = Cartas.get(chave);
     CartaAtual = carta;
 
-    var titulo = document.getElementById('Palavra');
-    var categoria = document.getElementById('Categoria');
-
-    var dicas = document.getElementById('Dicas');
+    // Resetando Dicas
     dicas.remove();
-    
     dicas = document.createElement('ul');
     dicas.id = 'Dicas';
     dicas.className = 'Dicas';
@@ -86,36 +96,41 @@ function pCarta(){
     titulo.innerHTML = carta.descricao;
     categoria.innerHTML = "Diga aos jogadores que sou da categoria\n" + carta.categoria;
     
-    titulo.addEventListener('click',(e)=>{
-        var titulo = document.getElementById('Palavra');
-        titulo.style.setProperty('filter', 'blur(0)');
-    })
+    titulo.addEventListener('click',revelaPalavra);
     
     var i = 0;
-
     for (var dica of carta.dicas){
         var item = document.createElement('li');
         item.id = i++;
         item.appendChild(document.createTextNode("DICA " + i));
-        item.addEventListener('click', (id)=>{verDica(id.target)})
+        item.addEventListener('click', (id)=>{verDica(id.target)});
         dicas.appendChild(item);
     }
 
     div.appendChild(dicas);
     const lista = document.querySelector('li');
 
+    // Eliminando Carta selecionada da pilhar
     Cartas.delete(chave);
     window.history.pushState("", "Title", CartaAtual.descricao);
+}
+
+function revelaPalavra(){
+    var titulo = document.getElementById('Palavra');
+    titulo.style.setProperty('filter', 'blur(0)');
+    addPonto();
 }
 
 function verDica( dica ){
     var status = document.getElementById('DicaAtual');
     if(!vistas.includes(dica.id)){
         vistas.push(dica.id);
+        TrocaTime();
     }
-
+    console.log(vistas);
     dica.innerHTML = CartaAtual.dicas[dica.id];
     status.innerHTML = CartaAtual.dicas[dica.id];
+
 }
 
 function addTime(e){
@@ -136,7 +151,6 @@ function addTime(e){
         pontuação.id = time.nome;
 
         div.className = 'Time';
-        pontuação.addEventListener('click', (e)=>{addPonto(e.target.id)});
         pontuação.addEventListener('wheel', (e)=>{rmPonto(e.target.id)});
         div.appendChild(nome);
         div.appendChild(label);
@@ -147,28 +161,36 @@ function addTime(e){
 
 }
 
-function addPonto( nome ){
-    
-    for(var i = 0 ; i< Times.length;i++){
-        console.log(Times[i]);
-        if(Times[i].nome === nome){
-            Times[i].pontos += 11 - vistas.length ;
-            var alvo = document.getElementById(nome);
-            console.log(alvo);
-            alvo.innerHTML = Times[i].pontos;
-        }
-    }
+function addPonto(){
+    console.log(Times[TimeAtual].pontos);
+    Times[TimeAtual].pontos += 11 - vistas.length ;
+    console.log(Times[TimeAtual].pontos);
+    var alvo = document.getElementById(Times[TimeAtual].nome);
+    alvo.innerHTML = Times[TimeAtual].pontos;
     
 }
+
 function rmPonto( nome ){
     for(var i = 0 ; i< Times.length;i++){
-        console.log(Times[i]);
         if(Times[i].nome === nome){
             Times[i].pontos -= 1 ;
             var alvo = document.getElementById(nome);
-            console.log('SEGUNDO');
             alvo.innerHTML = Times[i].pontos;
         }
     }
     
 }
+
+function TrocaTime(){
+    var alvo = document.getElementById(Times[TimeAtual].nome);
+    alvo.style.setProperty('background-color', 'rgb(231,231,231)' ) ;
+
+    if(++TimeAtual >= Times.length){
+        TimeAtual = 0;
+    }
+    
+    var alvo = document.getElementById(Times[TimeAtual].nome);
+    alvo.style.setProperty('background-color', 'rgb(255,104,93)');
+    
+}
+
